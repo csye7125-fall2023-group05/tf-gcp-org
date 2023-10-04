@@ -9,7 +9,7 @@ jobs:
   gcp_tf_validate:
     runs-on: ubuntu-latest
     environment: ${{ vars.ENVIRONMENT }}
-    name: Configure AWS `ghactions` IAM user
+    name: Validate GCP Infrastructure
     steps:
       - name: Checking out the terraform code
         uses: actions/checkout@v3
