@@ -13,6 +13,15 @@ resource "google_compute_subnetwork" "public_subnet" {
   region        = var.region
 }
 
+# Router for the network
+resource "google_compute_router" "csye7125_router" {
+  
+  name    = "csye7125-router"
+  network = google_compute_network.my_vpc.name
+
+}
+
+
 # Firewall rules 
 resource "google_compute_firewall" "ssh_rule" {
   name    = "ssh-firewall"
