@@ -4,6 +4,18 @@ variable "region" {
   type        = string
 }
 
+variable "dev_folder_id" {
+  description = "Dev folder ID in organization"
+  default     = "135331753386"
+  type        = string
+}
+
+variable "folder_name" {
+  description = "GCP organization folder name"
+  default     = "test-folder"
+  type        = string
+}
+
 variable "project_name" {
   description = "GCP project display name"
   default     = "tf-gcp-org"

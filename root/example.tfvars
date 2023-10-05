@@ -1,4 +1,6 @@
 region             = ""
+dev_folder_id      = ""
+folder_name        = ""
 project_name       = ""
 project_id         = ""
 org_id             = ""
@@ -10,4 +12,3 @@ subnet_name        = ""
 vm_name            = ""
 machine_type       = ""
 zone               = ""
-

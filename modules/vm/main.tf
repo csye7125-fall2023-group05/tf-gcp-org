@@ -3,19 +3,23 @@ resource "google_compute_instance" "csye7125_vm" {
   machine_type = var.machine_type
   zone         = var.zone
 
-  tags = ["csye7125_vm"]
+  tags = ["csye7125", "vm", "dev"]
 
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-11"
+      labels = {
+        os   = "debian-11"
+        type = "compute-instance"
+      }
     }
   }
 
   network_interface {
-    network = var.subnetwork
-    access_config {
-      // Ephemeral public IP
-    }
+    subnetwork = var.subnet_name
   }
-
+  metadata = {
+    os   = "debian-11"
+    type = "compute-instance"
+  }
 }
