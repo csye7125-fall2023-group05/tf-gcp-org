@@ -1,4 +1,4 @@
-name: Terraform IaC template validation for GCP Infrastructure
+name: TF for GCP Infra
 
 on:
   workflow_dispatch:
@@ -13,33 +13,13 @@ jobs:
     steps:
       - name: Checking out the terraform code
         uses: actions/checkout@v3
-      # - name: Create Terraform variables
-      #   run: |
-      #     cd root && touch prod.tfvars
-      #     echo region=${{ vars.GCP_REGION }} >> prod.tfvars
-      #     echo env=${{ vars.ENV }} >> prod.tfvars
-      #     echo subnet_cidr=${{ vars.GCP_SUBNET_CIDR }} >> prod.tfvars
-      #     echo project_name=${{ vars.GCP_PROJECT_NAME }} >> prod.tfvars
-      #     echo project_id=${{ vars.GCP_PROJECT_ID }} >> prod.tfvars
-      #     echo org_id=${{ vars.GCP_ORG_ID }} >> prod.tfvars
-      #     echo billing_account_id=${{ secrets.GCP_ORG_ID }} >> prod.tfvars
-      #     echo api_names=${{ vars.GCP_API_NAMES }} >> prod.tfvars
-      #     echo vpc_name=${{vars.GCP_VPC_NAME}} >> prod.tfvars
-      #     echo subnet_name=${{vars.GCP_SUBNET_NAME}} >> prod.tfvars
-      #     echo vm_name=${{vars.GCP_VM_NAME}} >> prod.tfvars
-      #     echo machine_type=${{vars.GCP_MACHINE_TYPE}} >> prod.tfvars
-      #     echo zone=${{vars.GCP_ZONE}} >> prod.tfvars
-          
-
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-      #     aws-region: ${{ vars.AWS_REGION }}
 
       - name: Setup `Terraform`
         uses: hashicorp/setup-terraform@v2
+
+      - name: Enter root tf directory
+        run: |
+          cd root
 
       - name: Terraform fmt
         id: fmt
