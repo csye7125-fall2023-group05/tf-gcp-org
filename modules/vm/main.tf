@@ -17,6 +17,10 @@ resource "google_compute_instance" "csye7125_vm" {
 
   network_interface {
     subnetwork = var.subnet_name
+    access_config {
+      # ephimeral public IP config
+      # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#nested_access_config
+    }
   }
   metadata = {
     os   = "debian-11"
