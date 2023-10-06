@@ -142,9 +142,13 @@ We will create and use a service account to setup our infra using Terraform.
 gcloud auth activate-service-account --key-file=<service-account-keys>.json
 # check active gcloud configurations
 gcloud config configurations list
+# login to authenticate application-default GCP account
+gcloud auth application-default login
 ```
 
-With this setup in place, we can now start using HCP Terraform to create resources on Google Cloud/
+> **Token Caching**: If you have been running Terraform commands for a long time, you may want to clear any cached tokens on your machine, as they can become invalid over time. To avoid token caching, we need to run the application default login command: `gcloud auth application-default login`.
+
+With this setup in place, we can now start using HCP Terraform to create resources on Google Cloud.
 
 ## :wrench: Working with Terraform
 
