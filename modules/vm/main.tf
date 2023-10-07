@@ -3,7 +3,7 @@ resource "google_compute_instance" "csye7125_vm" {
   machine_type = var.machine_type
   zone         = var.zone
 
-  tags = ["csye7125", "vm", "dev"]
+  # tags = ["csye7125", "vm", "dev"]
 
   boot_disk {
     initialize_params {
