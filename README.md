@@ -148,7 +148,77 @@ gcloud auth application-default login
 
 > **Token Caching**: If you have been running Terraform commands for a long time, you may want to clear any cached tokens on your machine, as they can become invalid over time. To avoid token caching, we need to run the application default login command: `gcloud auth application-default login`.
 
-With this setup in place, we can now start using HCP Terraform to create resources on Google Cloud.
+### 🔏 Policies
+
+We will have to provide organization level roles that will be inherited by the service account and the root user.
+
+> All permission we provide will be given to the `organization principal`, i.e., `gcp.<domain>.tld`.
+
+Here's a list of required roles:
+
+- `gcp.<domain>.tld`:
+  - `Billing Account Creator`
+  - `Organization Administrator`
+  - `Organization Policy Administrator`
+  - `Project Creator`
+- root user:
+  - `Folder Admin`
+  - `Organization Administrator`
+- service account:
+  - `Editor`
+  - `Folder Admin`
+  - `Project Creator`
+
+### 💻 SSH into Compute Instance
+
+To `ssh` into the VM instance, we will have to add the public SSH key into the project [`metadata`](https://console.cloud.google.com/compute/metadata).
+This can also be [done via Terraform](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata.html#example-usage---adding-an-ssh-key).
+
+```tf
+/*
+A key set in project metadata is propagated to every instance in the project.
+This resource configuration is prone to causing frequent diffs as Google adds SSH Keys when the SSH Button is pressed in the console.
+It is better to use OS Login instead.
+*/
+resource "google_compute_project_metadata" "my_ssh_key" {
+  metadata = {
+    ssh-keys = <<EOF
+      dev:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILg6UtHDNyMNAh0GjaytsJdrUxjtLy3APXqZfNZhvCeT dev
+      foo:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILg6UtHDNyMNAh0GjaytsJdrUxjtLy3APXqZfNZhvCeT bar
+    EOF
+  }
+}
+```
+
+#### Generate the SSH key locally
+
+To generate the ssh key locally on your workstation, use the following command:
+
+```bash
+# follow the on-screen steps after running the command
+# avoid adding a passphrase
+ssh-keygen -t rsa -b 2048 -C <username>
+```
+
+Once the public SSH key has been added to the VM instance metadata, we can use the `external IP` to connect to the VM instance.
+Use the below command to connect to the instance:
+
+```bash
+ssh -i <path-to-private-key> <username>@<external-ip>
+```
+
+### 🕹️ Enabling APIs
+
+In order to create resources on GCP, we will have to enable some basic APIs. This can be done via Terraform.
+
+Below is a non-exhaustive list of APIs that can come in handy:
+
+- `compute.googleapis.com`
+- `storage.googleapis.com`
+- `container.googleapis.com`
+- `orgpolicy.googleapis.com`
+
+> NOTE: Remember to add timed delays to resources when creating them via Terraform.
 
 ## :wrench: Working with Terraform
 
