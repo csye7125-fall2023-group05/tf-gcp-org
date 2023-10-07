@@ -174,6 +174,12 @@ Here's a list of required roles:
 To `ssh` into the VM instance, we will have to add the public SSH key into the project [`metadata`](https://console.cloud.google.com/compute/metadata).
 This can also be [done via Terraform](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_project_metadata.html#example-usage---adding-an-ssh-key).
 
+> A key set in project metadata is propagated to every instance in the project.
+This resource configuration is prone to causing frequent diffs as Google adds SSH Keys when the SSH Button is pressed in the console.
+It is better to use OS Login instead.
+
+1. Using project metadata resource
+
 ```tf
 /*
 A key set in project metadata is propagated to every instance in the project.
@@ -190,6 +196,35 @@ resource "google_compute_project_metadata" "my_ssh_key" {
 }
 ```
 
+2. Using instance metadata resource
+
+```tf
+resource "google_compute_instance" "vm" {
+    metadata = {
+      ssh-keys = "username:${file("~/.ssh/<ssh-key>.pub")}"
+  }
+}
+```
+
+> NOTE: We can also send a file in the `ssh-keys` metadata instead of plain-text public ssh key file.
+
+3. OS Login at User level (recommended method)
+
+Follow the [Terraform documentation on OS login](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/os_login_ssh_public_key) on how to setup the `google_os_login_ssh_public_key` resource. Once complete, we need to add the metadata `enable-oslogin` property to `TRUE` to enable user login using SSH.
+> To use OS login, we need to create the infrastructure on Terraform using the `application-default user`.
+
+```tf
+resource "google_compute_instance" "vm" {
+  metadata = {
+    # Enable os-login through metadata
+    enable-oslogin : "TRUE"
+  }
+}
+```
+
+> NOTE: Since we do not set a default username with OS login, we need to use `USERNAME_DOMAIN_SUFFIX` to ssh into the VM.
+[Reference](https://cloud.google.com/compute/docs/oslogin/set-up-oslogin#connect_to_vms_that_have_os_login_enabled)
+
 #### Generate the SSH key locally
 
 To generate the ssh key locally on your workstation, use the following command:
@@ -205,6 +240,8 @@ Use the below command to connect to the instance:
 
 ```bash
 ssh -i <path-to-private-key> <username>@<external-ip>
+# if os login is enabled:
+ssh -i <path-to-private-key> <USERNAME_DOMAIN_SUFFIX>@<external-ip>
 ```
 
 ### 🕹️ Enabling APIs
@@ -218,7 +255,7 @@ Below is a non-exhaustive list of APIs that can come in handy:
 - `container.googleapis.com`
 - `orgpolicy.googleapis.com`
 
-> NOTE: Remember to add timed delays to resources when creating them via Terraform.
+> NOTE: Remember to add timed delays (using `time_sleep` resource) to the GCP resources when creating them via Terraform.
 
 ## :wrench: Working with Terraform
 

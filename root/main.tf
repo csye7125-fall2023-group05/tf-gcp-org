@@ -1,7 +1,6 @@
 module "folders" {
   source        = "../modules/folders"
   folder_name   = var.folder_name
-  org_id        = var.org_id
   dev_folder_id = var.dev_folder_id
 }
 
@@ -18,7 +17,6 @@ module "projects" {
   project_name       = var.project_name
   org_id             = var.org_id
   billing_account_id = var.billing_account_id
-  region             = var.region
 }
 
 resource "time_sleep" "creating_projects" {
@@ -57,10 +55,19 @@ module "vm" {
   depends_on   = [time_sleep.creating_network]
   source       = "../modules/vm"
   vm_name      = var.vm_name
-  vpc_name     = var.vpc_name
   subnet_name  = var.subnet_name
   machine_type = var.machine_type
-  region       = var.region
   zone         = var.zone
-  subnetwork   = module.network.public_subnet_name
+  static_ip    = module.network.static_ip
+}
+
+resource "time_sleep" "creating_vm" {
+  depends_on      = [module.vm]
+  create_duration = "60s"
+}
+
+module "os_login" {
+  depends_on = [time_sleep.creating_vm]
+  source     = "../modules/os_login"
+  project_id = var.project_id
 }

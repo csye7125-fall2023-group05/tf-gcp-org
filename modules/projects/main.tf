@@ -1,4 +1,4 @@
-resource "google_project" "vpc_project" {
+resource "google_project" "gke_project" {
   name            = var.project_name
   project_id      = var.project_id
   folder_id       = "folders/${var.gke_folder_id}"
