@@ -4,8 +4,4 @@ resource "google_project_service" "project_apis" {
   project            = var.project_id
   service            = each.key
   disable_on_destroy = false
-  timeouts {
-    create = "30m"
-    update = "40m"
-  }
 }

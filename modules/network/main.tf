@@ -28,14 +28,14 @@ resource "google_compute_route" "default_to_internet" {
 }
 
 # Static public IP address
-resource "google_compute_address" "Public_nat" {
-  name         = "publicnat"
+resource "google_compute_address" "static_ip" {
+  name         = "static-ip"
   address_type = "EXTERNAL"
   network_tier = "PREMIUM"
 }
 
 # Firewall rules
-resource "google_compute_firewall" "ssh_rule" {
+resource "google_compute_firewall" "firewall" {
   name    = "ssh-firewall"
   network = google_compute_network.vpc.name
   allow {

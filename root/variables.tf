@@ -1,74 +1,75 @@
 variable "region" {
-  description = "VPC region"
   default     = "us-east1"
   type        = string
+  description = "VPC region"
 }
 
 variable "dev_folder_id" {
-  description = "Dev folder ID in organization"
   default     = "135331753386"
   type        = string
+  description = "Dev folder ID in organization"
 }
 
 variable "folder_name" {
-  description = "GCP organization folder name"
   default     = "test-folder"
   type        = string
+  description = "GCP organization folder name"
 }
 
 variable "project_name" {
-  description = "GCP project display name"
   default     = "tf-gcp-org"
   type        = string
+  description = "GCP project display name"
 }
 
+# Follows regex: /^[a-z][-a-z0-9]{4,28}[a-z0-9]{1}$/gm
 variable "project_id" {
-  description = "GCP Project ID"
   default     = "tf-gcp-org-id"
   type        = string
+  description = "must be between 6 and 30 characters and can have lowercase letters, digits, or hyphens.It must start with a lowercase letter and end with a letter or number."
 }
 
 variable "org_id" {
-  description = "The numeric ID of the organization this project belongs to"
   type        = string
+  description = "The numeric ID of the organization this project belongs to"
 }
 
 variable "billing_account_id" {
-  description = "The alphanumeric ID of the billing account this project belongs to"
   type        = string
+  description = "The alphanumeric ID of the billing account this project belongs to"
 }
 
 variable "api_names" {
-  description = "list of apis to enable"
   type        = list(string)
+  description = "list of apis to enable"
 }
 
 variable "vpc_name" {
-  description = "VPC name"
   type        = string
+  description = "VPC name"
 }
 
 variable "subnet_cidr" {
-  description = "list of subnet cidr"
   type        = list(string)
+  description = "list of subnet cidr"
 }
 
 variable "subnet_name" {
-  description = "Subnet name"
   type        = string
+  description = "Subnet name"
 }
 
 variable "vm_name" {
-  description = "VM name"
   type        = string
+  description = "VM name"
 }
 
 variable "machine_type" {
-  description = "VM name"
   type        = string
+  description = "VM name"
 }
 
 variable "zone" {
-  description = "Zone name"
   type        = string
+  description = "Zone name"
 }
