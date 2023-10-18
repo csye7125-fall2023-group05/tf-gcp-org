@@ -229,6 +229,8 @@ resource "google_compute_instance" "vm" {
 
 To generate the ssh key locally on your workstation, use the following command:
 
+> NOTE: It is recommended that you create and store the SSH keys in `~/.ssh` directory
+
 ```bash
 # follow the on-screen steps after running the command
 # avoid adding a passphrase
@@ -242,6 +244,7 @@ Use the below command to connect to the instance:
 ssh -i <path-to-private-key> <username>@<external-ip>
 # if os login is enabled:
 ssh -i <path-to-private-key> <USERNAME_DOMAIN_SUFFIX>@<external-ip>
+# example: ssh -i ~/.ssh/gcp-compute.pub root_gcp_sydrawat_me@34.74.250.180
 ```
 
 ### 🕹️ Enabling APIs

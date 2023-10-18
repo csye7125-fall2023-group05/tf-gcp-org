@@ -67,7 +67,8 @@ resource "time_sleep" "creating_vm" {
 }
 
 module "os_login" {
-  depends_on = [time_sleep.creating_vm]
-  source     = "../modules/os_login"
-  project_id = var.project_id
+  depends_on   = [time_sleep.creating_vm]
+  source       = "../modules/os_login"
+  project_id   = var.project_id
+  ssh_key_file = var.ssh_key_file
 }

@@ -73,3 +73,8 @@ variable "zone" {
   type        = string
   description = "Zone name"
 }
+
+variable "ssh_key_file" {
+  type        = string
+  description = "Public ssh key file (<filename>.pub)"
+}

@@ -4,7 +4,7 @@ data "google_client_openid_userinfo" "me" {}
 # Add public ssh key to IAM user
 resource "google_os_login_ssh_public_key" "cache" {
   user = data.google_client_openid_userinfo.me.email
-  key  = file("~/.ssh/gcp-compute.pub")
+  key  = file("~/.ssh/${var.ssh_key_file}")
 }
 
 # Allow IAM user to use OS Login
