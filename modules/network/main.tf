@@ -44,8 +44,8 @@ resource "google_compute_router_nat" "nat" {
   router = google_compute_router.router.name
   region = var.region
 
-  source_subnetwork_ip_ranges_to_nat = var.source_subnetwork_ip_ranges_to_nat # "LIST_OF_SUBNETWORKS"
-  nat_ip_allocate_option             = var.nat_ip_allocate_strategy           #"MANUAL_ONLY"
+  source_subnetwork_ip_ranges_to_nat = var.source_subnetwork_ip_ranges_to_nat
+  nat_ip_allocate_option             = var.nat_ip_allocate_strategy
 
   subnetwork {
     name                    = google_compute_subnetwork.private.id
@@ -56,14 +56,14 @@ resource "google_compute_router_nat" "nat" {
 }
 
 
-resource "google_compute_route" "default_to_internet" {
-  name             = "default-internet-gateway"
-  network          = google_compute_network.vpc.name
-  dest_range       = "0.0.0.0/0"
-  next_hop_gateway = "default-internet-gateway"
-  priority         = 1000
-  description      = "Default route to the internet"
-}
+# resource "google_compute_route" "default_to_internet" {
+#   name             = "default-internet-gateway"
+#   network          = google_compute_network.vpc.name
+#   dest_range       = "0.0.0.0/0"
+#   next_hop_gateway = "default-internet-gateway"
+#   priority         = 1000
+#   description      = "Default route to the internet"
+# }
 
 # Static public IP address
 resource "google_compute_address" "static_ip" {
@@ -74,7 +74,7 @@ resource "google_compute_address" "static_ip" {
 
 # Service account
 resource "google_service_account" "kubernetes" {
-  account_id = var.account_id_kubernetes #"kubernetes"
+  account_id = var.account_id_kubernetes
 }
 
 # GKE cluster
@@ -83,7 +83,7 @@ resource "google_container_cluster" "my_gke" {
   location                 = var.region
   deletion_protection      = false
   remove_default_node_pool = true
-  initial_node_count       = var.initial_node_count #1
+  initial_node_count       = var.initial_node_count
   network                  = google_compute_network.vpc.id
   subnetwork               = google_compute_subnetwork.private.id
   # logging_service          = "logging.googleapis.com/kubernetes"
