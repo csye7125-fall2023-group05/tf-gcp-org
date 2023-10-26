@@ -78,3 +78,33 @@ variable "ssh_key_file" {
   type        = string
   description = "Public ssh key file (<filename>.pub)"
 }
+
+variable "secondary_ip_range_pod" {
+  type        = string
+  description = "ip range for pods"
+}
+
+variable "secondary_ip_range_service" {
+  type        = string
+  description = "ip range for k8s services"
+}
+variable "source_subnetwork_ip_ranges_to_nat" {
+  type        = string
+  description = ""
+}
+variable "nat_ip_allocate_strategy" {
+  type        = string
+  description = "different stratergies to use"
+}
+variable "account_id_kubernetes" {
+  type        = string
+  description = "account id for workload identity"
+}
+variable "initial_node_count" {
+  type        = number
+  description = "initial node count in the node pool"
+}
+variable "node_zones" {
+  type        = list(string)
+  description = "the zones in which we want our cluster to be deployed in"
+}
