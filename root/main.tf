@@ -37,13 +37,22 @@ resource "time_sleep" "creating_services" {
 }
 
 module "network" {
-  depends_on   = [time_sleep.creating_services]
-  source       = "../modules/network"
-  project_name = var.project_name
-  vpc_name     = var.vpc_name
-  subnet_cidr  = var.subnet_cidr
-  region       = var.region
-  subnet_name  = var.subnet_name
+  depends_on                         = [time_sleep.creating_services]
+  source                             = "../modules/network"
+  project_name                       = var.project_name
+  vpc_name                           = var.vpc_name
+  subnet_cidr                        = var.subnet_cidr
+  region                             = var.region
+  subnet_name                        = var.subnet_name
+  project_id                         = var.project_id
+  secondary_ip_range_pod             = var.secondary_ip_range_pod
+  secondary_ip_range_service         = var.secondary_ip_range_service
+  source_subnetwork_ip_ranges_to_nat = var.source_subnetwork_ip_ranges_to_nat
+  nat_ip_allocate_strategy           = var.nat_ip_allocate_strategy
+  account_id_kubernetes              = var.account_id_kubernetes
+  initial_node_count                 = var.initial_node_count
+  node_zones                         = var.node_zones
+
 }
 
 resource "time_sleep" "creating_network" {
@@ -51,23 +60,23 @@ resource "time_sleep" "creating_network" {
   create_duration = "60s"
 }
 
-module "vm" {
-  depends_on   = [time_sleep.creating_network]
-  source       = "../modules/vm"
-  vm_name      = var.vm_name
-  subnet_name  = var.subnet_name
-  machine_type = var.machine_type
-  zone         = var.zone
-  static_ip    = module.network.static_ip
-}
+# module "vm" {
+#   depends_on   = [time_sleep.creating_network]
+#   source       = "../modules/vm"
+#   vm_name      = var.vm_name
+#   subnet_name  = var.subnet_name
+#   machine_type = var.machine_type
+#   zone         = var.zone
+#   static_ip    = module.network.static_ip
+# }
 
-resource "time_sleep" "creating_vm" {
-  depends_on      = [module.vm]
-  create_duration = "60s"
-}
+# resource "time_sleep" "creating_vm" {
+#   depends_on      = [module.vm]
+#   create_duration = "60s"
+# }
 
 module "os_login" {
-  depends_on   = [time_sleep.creating_vm]
+  # depends_on   = [time_sleep.creating_vm]
   source       = "../modules/os_login"
   project_id   = var.project_id
   ssh_key_file = var.ssh_key_file
