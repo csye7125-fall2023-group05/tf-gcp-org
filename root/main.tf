@@ -60,23 +60,23 @@ resource "time_sleep" "creating_network" {
   create_duration = "60s"
 }
 
-# module "vm" {
-#   depends_on   = [time_sleep.creating_network]
-#   source       = "../modules/vm"
-#   vm_name      = var.vm_name
-#   subnet_name  = var.subnet_name
-#   machine_type = var.machine_type
-#   zone         = var.zone
-#   static_ip    = module.network.static_ip
-# }
+module "vm" {
+  depends_on   = [time_sleep.creating_network]
+  source       = "../modules/vm"
+  vm_name      = var.vm_name
+  subnet_name  = var.subnet_name
+  machine_type = var.machine_type
+  zone         = var.zone
+  static_ip    = module.network.static_ip
+}
 
-# resource "time_sleep" "creating_vm" {
-#   depends_on      = [module.vm]
-#   create_duration = "60s"
-# }
+resource "time_sleep" "creating_vm" {
+  depends_on      = [module.vm]
+  create_duration = "10s"
+}
 
 module "os_login" {
-  depends_on   = [time_sleep.creating_network]
+  depends_on   = [time_sleep.creating_vm]
   source       = "../modules/os_login"
   project_id   = var.project_id
   ssh_key_file = var.ssh_key_file

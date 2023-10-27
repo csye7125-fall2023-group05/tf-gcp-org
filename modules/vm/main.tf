@@ -13,12 +13,14 @@ resource "google_compute_instance" "vm" {
     }
   }
 
+  tags = ["bastion"]
+
   network_interface {
     subnetwork = var.subnet_name
     access_config {
       # ephimeral public IP config
       # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance#nested_access_config
-      nat_ip = var.static_ip
+      # nat_ip = var.static_ip
     }
   }
   metadata = {
