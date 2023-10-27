@@ -55,15 +55,15 @@ resource "google_compute_router_nat" "nat" {
   nat_ips = [google_compute_address.static_ip.self_link]
 }
 
-
-# resource "google_compute_route" "default_to_internet" {
-#   name             = "default-internet-gateway"
-#   network          = google_compute_network.vpc.name
-#   dest_range       = "0.0.0.0/0"
-#   next_hop_gateway = "default-internet-gateway"
-#   priority         = 1000
-#   description      = "Default route to the internet"
-# }
+# Open the IGW
+resource "google_compute_route" "default_to_internet" {
+  name             = "default-internet-gateway"
+  network          = google_compute_network.vpc.name
+  dest_range       = "0.0.0.0/0"
+  next_hop_gateway = "default-internet-gateway"
+  priority         = 1000
+  description      = "Default route to the internet"
+}
 
 # Static public IP address
 resource "google_compute_address" "static_ip" {
@@ -86,9 +86,9 @@ resource "google_container_cluster" "my_gke" {
   initial_node_count       = var.initial_node_count
   network                  = google_compute_network.vpc.id
   subnetwork               = google_compute_subnetwork.private.id
-  # logging_service          = "logging.googleapis.com/kubernetes"
-  # monitoring_service       = "monitoring.googleapis.com/kubernetes"
-  networking_mode = "VPC_NATIVE"
+  logging_service          = "logging.googleapis.com/kubernetes"
+  monitoring_service       = "monitoring.googleapis.com/kubernetes"
+  networking_mode          = "VPC_NATIVE"
 
 
   # Optional, if you want multi-zonal cluster
@@ -110,6 +110,15 @@ resource "google_container_cluster" "my_gke" {
     channel = "REGULAR"
   }
 
+  # master_auth {
+  #   client_certificate_config {
+  #     issue_client_certificate = false
+  #   }
+  # }
+
+  master_authorized_networks_config {
+
+  }
   # enable workload identity wherein all the service acc will be attached to the pods
   # so that they can access the various google services (so its pod level and not node level)
   workload_identity_config {
@@ -121,9 +130,10 @@ resource "google_container_cluster" "my_gke" {
     services_secondary_range_name = "k8s-service-range"
   }
 
+
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = false
+    enable_private_endpoint = true
     master_ipv4_cidr_block  = "172.16.0.0/28"
   }
 
@@ -156,7 +166,12 @@ resource "google_container_node_pool" "general" {
 
     service_account = google_service_account.kubernetes.email
     oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/servicecontrol",
+      "https://www.googleapis.com/auth/service.management.readonly",
+      "https://www.googleapis.com/auth/trace.append",
     ]
   }
 }
@@ -175,6 +190,8 @@ resource "google_compute_firewall" "firewall" {
     ports    = ["22"]
   }
   source_ranges = ["0.0.0.0/0"]
+
+  target_tags = ["bastion"]
 }
 
 
