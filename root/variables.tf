@@ -79,15 +79,6 @@ variable "ssh_key_file" {
   description = "Public ssh key file (<filename>.pub)"
 }
 
-variable "secondary_ip_range_pod" {
-  type        = string
-  description = "ip range for pods"
-}
-
-variable "secondary_ip_range_service" {
-  type        = string
-  description = "ip range for k8s services"
-}
 variable "source_subnetwork_ip_ranges_to_nat" {
   type        = string
   description = ""
@@ -107,4 +98,19 @@ variable "initial_node_count" {
 variable "node_zones" {
   type        = list(string)
   description = "the zones in which we want our cluster to be deployed in"
+}
+
+variable "cluster_master_ip_cidr_range" {
+  type        = string
+  description = "The CIDR range to use for Kubernetes cluster master"
+}
+
+variable "cluster_pods_ip_cidr_range" {
+  type        = string
+  description = "The CIDR range to use for Kubernetes cluster pods"
+}
+
+variable "cluster_services_ip_cidr_range" {
+  type        = string
+  description = "The CIDR range to use for Kubernetes cluster services"
 }
