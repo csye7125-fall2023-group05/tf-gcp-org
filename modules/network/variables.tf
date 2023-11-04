@@ -3,11 +3,5 @@ variable "project_name" {}
 variable "subnet_name" {}
 variable "subnet_cidr" {}
 variable "region" {}
-variable "project_id" {}
-variable "secondary_ip_range_pod" {}
-variable "secondary_ip_range_service" {}
 variable "source_subnetwork_ip_ranges_to_nat" {}
 variable "nat_ip_allocate_strategy" {}
-variable "account_id_kubernetes" {}
-variable "initial_node_count" {}
-variable "node_zones" {}
