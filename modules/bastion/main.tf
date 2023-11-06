@@ -22,7 +22,7 @@ resource "google_compute_instance" "bastion" {
 
   metadata_startup_script = file("../modules/bastion/startup.sh")
 
-  // Allow the instance to be stopped by Terraform when updating configuration.
+  # Allow the instance to be stopped by Terraform when updating configuration.
   allow_stopping_for_update = true
   network_interface {
     subnetwork = var.subnet_name
@@ -39,9 +39,9 @@ resource "google_compute_instance" "bastion" {
     enable-oslogin : "TRUE"
   }
 
-  /* local-exec providers may run before the host has fully initialized.
-  However, they are run sequentially in the order they were defined.
-  This provider is used to block the subsequent providers until the instance is available. */
+  # local-exec providers may run before the host has fully initialized.
+  # However, they are run sequentially in the order they were defined.
+  # This provider is used to block the subsequent providers until the instance is available.
   #   provisioner "local-exec" {
   #     command = <<EOF
   #         READY=""
@@ -62,13 +62,13 @@ resource "google_compute_instance" "bastion" {
   #   }
 }
 
-// Allow access to the Bastion Host via SSH.
+# Allow access to the Bastion Host via SSH.
 resource "google_compute_firewall" "bastion-ssh" {
   name          = format("%s-bastion-ssh", var.vpc_name)
   network       = var.vpc_name
   direction     = "INGRESS"
   project       = var.project_id
-  source_ranges = ["0.0.0.0/0"] // TODO: Restrict further.
+  source_ranges = ["0.0.0.0/0"]
 
   allow {
     protocol = "tcp"

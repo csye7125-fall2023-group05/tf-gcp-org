@@ -30,7 +30,6 @@ resource "google_container_cluster" "my_gke" {
   }
 
   dynamic "master_authorized_networks_config" {
-    // TODO
     for_each = var.authorized_ipv4_cidr_block != null ? [var.authorized_ipv4_cidr_block] : []
     content {
       cidr_blocks {
@@ -81,7 +80,7 @@ resource "google_container_node_pool" "gke_linux_node_pool" {
   node_config {
     preemptible  = true
     machine_type = "e2-small"
-    image_type   = "COS_CONTAINERD" #containerd
+    image_type   = "COS_CONTAINERD"
 
     labels = {
       role    = "general"

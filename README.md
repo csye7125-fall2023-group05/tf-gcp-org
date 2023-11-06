@@ -325,3 +325,45 @@ terraform {
   }
 }
 ```
+
+## Google Kubernetes Engine
+
+To run the kubernetes cluster on Google Kubernetes Engine, we use the [`google_container_cluster`](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster) resource to define the cluster configurations.
+
+> To provision a GKE cluster on Google Cloud, refer [here](https://learn.hashicorp.com/tutorials/terraform/gke?in=terraform/kubernetes&utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS).
+> See the [Using GKE with Terraform](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/using_gke_with_terraform) guide for more information about using GKE with Terraform.
+
+Once the setup is configured, we need to connect to the bastion host in order to interact with the private GKE cluster. Follow the steps mentioned below in order to connect to the `bastion host` via your local terminal:
+
+- Install the google `gke-cloud-auth-plugin` locally:
+
+```bash
+gcloud components install gke-gcloud-auth-plugin
+```
+
+- Get the cluster configuration to be written into `~/.kube/config`:
+
+```bash
+gcloud container clusters get-credentials primary \
+    --region=<your-gke-region> \
+    --project=<your-gke-project-name>
+```
+
+- Connect to the tunnel via SSH:
+
+```bash
+ssh -i ~/.ssh/<private-key> <username>@<compute-instance-ip> -L 8888:127.0.0.1:8888 -N -q -f
+```
+
+- Configure `HTTPS_PROXY` to point to `localhost:8888`:
+
+```bash
+export HTTPS_PROXY=localhost:8888
+```
+
+- Confirm connection to the GKE cluster:
+
+```bash
+kubectl get all
+kubectl get ns
+```
