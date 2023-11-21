@@ -338,6 +338,7 @@ Once the setup is configured, we need to connect to the bastion host in order to
 - Install the google `gke-cloud-auth-plugin` locally:
 
 ```bash
+# assuming you already have the gcloud-sdk installed:
 gcloud components install gke-gcloud-auth-plugin
 ```
 
@@ -366,4 +367,66 @@ export HTTPS_PROXY=localhost:8888
 ```bash
 kubectl get all
 kubectl get ns
+```
+
+### [Kubectl Auth in GKE v1.26](https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke)
+
+Following the latest changes to the standard GKE cluster, kubectl authentication has changes in GKE v1.26, starting which, users will have to install a new kubectl plugin called **"gke-gcloud-auth-plugin"**.
+
+Existing versions of kubectl and custom Kubernetes clients contain provider-specific code to manage authentication between the client and Google Kubernetes Engine. Starting with v1.26, this code will no longer be included as part of the OSS kubectl. GKE users will need to download and use a separate authentication plugin to generate GKE-specific tokens. This new binary, `gke-gcloud-auth-plugin`, uses the [Kubernetes Client-go Credential Plugin](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#client-go-credential-plugins) mechanism to extend kubectl’s authentication to support GKE. Because plugins are already supported by kubectl, you can switch to the new mechanism now, before v1.26 becomes available.
+
+Below are the installation instructions and technical details of this new binary.
+
+### Kubectl authentication plugin installation instructions
+
+You will need to install the gke-gcloud-auth-plugin binary on all systems where kubectl or Kubernetes custom clients are used.
+
+#### Install using "apt-get install" for DEB based systems
+
+> **NOTE**: Customers using `apt-get install` may need to set up [Google Cloud-Sdk repository source](https://cloud.google.com/sdk/docs/install#deb), if not already set for other [CLOUD-SDK component installations](https://cloud.google.com/sdk/docs/components#external_package_managers).
+
+- Before installing the kubectl auth plugin, make sure that your operating system meets the following requirements:
+
+```bash
+# make sure the Ubuntu/Debian image has not reached it's end of life.
+# recently updated packages
+sudo apt-get update -y
+# make sure`apt-transport-https` and `sudo` are installed
+sudo apt-get install apt-transport-https ca-certificates gnupg curl sudo -y
+```
+
+- Install the Google Cloud-Sdk repository soource:
+
+```bash
+# For newer distributions (Debian 9+ or Ubuntu 18.04+) run the following command:
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo \
+  gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+
+# For older distributions, run the following command:
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo \
+  apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+
+# If your distribution's apt-key command doesn't support the --keyring argument, run the following command:
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+```
+
+- Add the gcloud CLI distribution URI as a package source
+
+```bash
+# For newer distributions (Debian 9+ or Ubuntu 18.04+), run the following command
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo \
+  tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+# For older distributions that don't support the signed-by option, run the following command:
+echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | sudo \
+  tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+```
+
+> **NOTE**: Make sure you don't have duplicate entries for the **cloud-sdk** repo in **/etc/apt/sources.list.d/google-cloud-sdk.list**.
+
+- Finally, run the following command to install the plugin:
+
+```bash
+sudo apt-get update -y
+sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin -y
 ```
