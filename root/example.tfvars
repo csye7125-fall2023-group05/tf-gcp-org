@@ -20,4 +20,6 @@ source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
 nat_ip_allocate_strategy           = "MANUAL_ONLY"
 account_id_kubernetes              = ""
 initial_node_count                 = 1
+max_node_count                     = 2
+min_node_count                     = 1
 node_zones                         = ["", ""]

@@ -92,6 +92,8 @@ module "k8s" {
   region                     = var.region
   account_id_kubernetes      = var.account_id_kubernetes
   initial_node_count         = var.initial_node_count
+  max_node_count             = var.max_node_count
+  min_node_count             = var.min_node_count
   node_zones                 = var.node_zones
   master_ipv4_cidr_block     = var.cluster_master_ip_cidr_range
   pods_ipv4_cidr_block       = var.cluster_pods_ip_cidr_range
