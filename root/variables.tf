@@ -115,3 +115,13 @@ variable "cluster_services_ip_cidr_range" {
   type        = string
   description = "The CIDR range to use for Kubernetes cluster services"
 }
+
+variable "max_node_count" {
+  type        = number
+  description = "The max node count when autoscaling the cluster"
+}
+
+variable "min_node_count" {
+  type        = number
+  description = "THe min node count when autoscaling the cluster"
+}

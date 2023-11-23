@@ -77,8 +77,8 @@ resource "google_container_node_pool" "gke_linux_node_pool" {
   node_count     = 1
 
   autoscaling {
-    max_node_count = 2 # change to 6
-    min_node_count = 1 # change to 3
+    max_node_count = var.max_node_count # change to 6
+    min_node_count = var.min_node_count # change to 3
   }
 
   management {
