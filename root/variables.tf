@@ -7,7 +7,7 @@ variable "region" {
 variable "dev_folder_id" {
   default     = "135331753386"
   type        = string
-  description = "Dev folder ID in organization"
+  description = "Dev/Prod folder ID in organization. Default is dev folder ID"
 }
 
 variable "folder_name" {
@@ -66,7 +66,8 @@ variable "vm_name" {
 
 variable "machine_type" {
   type        = string
-  description = "VM name"
+  description = "The compute instance machine type. Default machine has 8 vCPU and 32GiB vRAM"
+  default     = "e2-standard-8"
 }
 
 variable "zone" {
@@ -89,7 +90,7 @@ variable "nat_ip_allocate_strategy" {
 }
 variable "account_id_kubernetes" {
   type        = string
-  description = "account id for workload identity"
+  description = "service account id for workload identity with access to GKE cluster node pools"
 }
 variable "initial_node_count" {
   type        = number

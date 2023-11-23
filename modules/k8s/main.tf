@@ -1,11 +1,20 @@
 # Service account
-resource "google_service_account" "kubernetes" {
-  account_id = var.account_id_kubernetes
+resource "google_service_account" "gke_sa" {
+  account_id   = var.account_id_kubernetes
+  display_name = "GKE Admin Service Account"
+}
+
+resource "google_project_iam_binding" "gke_sa_admin" {
+  project = var.project_id
+  role    = "roles/container.admin"
+  members = [
+    "serviceAccount:${google_service_account.gke_sa.email}"
+  ]
 }
 
 # GKE cluster
-resource "google_container_cluster" "my_gke" {
-  name                = "primary"
+resource "google_container_cluster" "pwncorp_cluster" {
+  name                = "pwncorp-cluster"
   location            = var.region
   deletion_protection = false
   # We can't create a cluster with no node pool defined, but we want to only use
@@ -61,15 +70,15 @@ resource "google_container_cluster" "my_gke" {
 
 # Node pool for Cluster
 resource "google_container_node_pool" "gke_linux_node_pool" {
-  name           = "${google_container_cluster.my_gke.name}--linux-node-pool"
-  location       = google_container_cluster.my_gke.location
+  name           = "${google_container_cluster.pwncorp_cluster.name}--linux-node-pool"
+  location       = google_container_cluster.pwncorp_cluster.location
   node_locations = var.node_zones
-  cluster        = google_container_cluster.my_gke.name
+  cluster        = google_container_cluster.pwncorp_cluster.name
   node_count     = 1
 
   autoscaling {
-    max_node_count = 2
-    min_node_count = 1
+    max_node_count = 2 # change to 6
+    min_node_count = 1 # change to 3
   }
 
   management {
@@ -84,10 +93,10 @@ resource "google_container_node_pool" "gke_linux_node_pool" {
 
     labels = {
       role    = "general"
-      cluster = google_container_cluster.my_gke.name
+      cluster = google_container_cluster.pwncorp_cluster.name
     }
 
-    service_account = google_service_account.kubernetes.email
+    service_account = google_service_account.gke_sa.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",
