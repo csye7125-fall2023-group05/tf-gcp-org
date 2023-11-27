@@ -1,6 +1,7 @@
 variable "vpc_name" {}
 variable "subnet_name" {}
 variable "region" {}
+variable "k8s_machine_type" {}
 variable "project_id" {}
 variable "account_id_kubernetes" {}
 variable "initial_node_count" {}

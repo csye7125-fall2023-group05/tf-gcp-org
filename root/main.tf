@@ -90,6 +90,7 @@ module "k8s" {
   vpc_name                   = var.vpc_name
   subnet_name                = var.subnet_name
   region                     = var.region
+  k8s_machine_type           = var.k8s_machine_type
   account_id_kubernetes      = var.account_id_kubernetes
   initial_node_count         = var.initial_node_count
   max_node_count             = var.max_node_count

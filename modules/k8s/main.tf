@@ -88,7 +88,7 @@ resource "google_container_node_pool" "gke_linux_node_pool" {
 
   node_config {
     preemptible  = true
-    machine_type = "e2-small"
+    machine_type = var.k8s_machine_type
     image_type   = "COS_CONTAINERD"
 
     labels = {
