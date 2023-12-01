@@ -16,6 +16,7 @@ resource "google_project_iam_binding" "gke_sa_admin" {
 resource "google_container_cluster" "pwncorp_cluster" {
   name                = "pwncorp-cluster"
   location            = var.region
+  node_locations      = var.node_zones
   deletion_protection = false
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
