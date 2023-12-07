@@ -25,9 +25,15 @@ resource "google_container_cluster" "pwncorp_cluster" {
   initial_node_count       = var.initial_node_count
   network                  = var.vpc_name
   subnetwork               = var.subnet_name
-  logging_service          = "logging.googleapis.com/kubernetes"
-  monitoring_service       = "monitoring.googleapis.com/kubernetes"
+  logging_service          = "none" # logging.googleapis.com/kubernetes
+  monitoring_service       = "none" # monitoring.googleapis.com/kubernetes
   networking_mode          = "VPC_NATIVE"
+
+  addons_config {
+    horizontal_pod_autoscaling {
+      disabled = false
+    }
+  }
 
   release_channel {
     channel = "REGULAR"
@@ -81,8 +87,8 @@ resource "google_container_node_pool" "gke_linux_node_pool" {
   node_count     = 1
 
   autoscaling {
-    max_node_count = var.max_node_count # change to 6
-    min_node_count = var.min_node_count # change to 3
+    max_node_count = var.max_node_count
+    min_node_count = var.min_node_count
   }
 
   management {
@@ -110,4 +116,26 @@ resource "google_container_node_pool" "gke_linux_node_pool" {
       "https://www.googleapis.com/auth/trace.append",
     ]
   }
+}
+
+resource "google_binary_authorization_policy" "binary_auth_policy" {
+  admission_whitelist_patterns {
+    name_pattern = "docker.io/bitnami/*"
+  }
+
+  admission_whitelist_patterns {
+    name_pattern = "docker.io/istio/*"
+  }
+
+  admission_whitelist_patterns {
+    name_pattern = "quay.io/pwncorp/*"
+  }
+
+  default_admission_rule {
+    evaluation_mode  = "ALWAYS_DENY"
+    enforcement_mode = "ENFORCED_BLOCK_AND_AUDIT_LOG"
+  }
+
+  global_policy_evaluation_mode = "ENABLE"
+  project                       = var.project_id
 }
