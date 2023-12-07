@@ -111,3 +111,25 @@ resource "google_container_node_pool" "gke_linux_node_pool" {
     ]
   }
 }
+
+resource "google_binary_authorization_policy" "binary_auth_policy" {
+  admission_whitelist_patterns {
+    name_pattern = "docker.io/bitnami/*"
+  }
+
+  admission_whitelist_patterns {
+    name_pattern = "docker.io/istio/*"
+  }
+
+  admission_whitelist_patterns {
+    name_pattern = "quay.io/pwncorp/*"
+  }
+
+  default_admission_rule {
+    evaluation_mode  = "ALWAYS_DENY"
+    enforcement_mode = "ENFORCED_BLOCK_AND_AUDIT_LOG"
+  }
+
+  global_policy_evaluation_mode = "ENABLE"
+  project                       = var.project_id
+}
