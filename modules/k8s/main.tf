@@ -67,6 +67,9 @@ resource "google_container_cluster" "pwncorp_cluster" {
     master_ipv4_cidr_block  = var.master_ipv4_cidr_block
   }
 
+  binary_authorization {
+    evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
+  }
 }
 
 # Node pool for Cluster
